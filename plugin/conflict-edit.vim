@@ -64,11 +64,6 @@ function! s:ProcessConflictFiles(files)
     call setqflist(conflicts)
     execute 'copen'
     execute 'cfirst'
-
-    " Highlight diff markers and then party until you shit
-    highlight Conflict guifg=white guibg=red
-    match Conflict /^=\{7}.*\|^>\{7}.*\|^<\{7}.*/
-    let @/ = '>>>>>>>\|=======\|<<<<<<<'
 endfunction
 
 " vim: set et sw=4 sts=4 ts=8:
