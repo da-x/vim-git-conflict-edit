@@ -9,13 +9,13 @@ function! EditConflictFiles()
         " If this line had a colon in it (otherwise it's an empty line
         " from command output)
         if len(l:spl) == 3
-            " Get the line number by removing the white space around it,
-            " because vim is a piece of shit
-            let l:line = substitute(l:spl[1], '\_s\+', '', 'g')
+            let l:filename = l:spl[0]
+            let l:line = l:spl[1]
+            let l:text = l:spl[2]
 
             " Add this file to the list with the data format for the quickfix
             " window
-            call add(l:conflicts, {'filename': l:spl[0],  'lnum': l:line, 'text': l:spl[2]})
+            call add(l:conflicts, {'filename': l:filename, 'lnum': l:line, 'text': l:text})
         endif
     endfor
 
