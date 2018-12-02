@@ -46,14 +46,14 @@ function! ProcessConflictFiles( files )
                     " Get the line number by removing the white space around it,
                     " because vim is a piece of shit
                     let line = substitute(spl[0], '\_s\+', '', 'g')
-                    
+
                     " Add this file to the list with the data format for the quickfix
                     " window
                     call add( conflicts, {'filename': conflict, 'lnum': line, 'text': spl[1]} )
                 endif
             endfor
         endif
-        
+
     endfor
 
     " Set the quickfix files and open the list
@@ -66,3 +66,5 @@ function! ProcessConflictFiles( files )
     match Conflict /^=\{7}.*\|^>\{7}.*\|^<\{7}.*/
     let @/ = '>>>>>>>\|=======\|<<<<<<<'
 endfunction
+
+" vim: set et sw=4 sts=4 ts=8:
