@@ -37,7 +37,6 @@ function! s:ProcessConflictFiles(files)
 
             for marker in markers
                 let spl = split(marker, ':')
-                echo spl
 
                 " If this line had a colon in it (otherwise it's an empty line
                 " from command output)
