@@ -1,62 +1,62 @@
 function! EditConflictFiles()
-    let conflicted = systemlist('git diff --name-only --diff-filter=U')
-    let massaged = []
+    let l:conflicted = systemlist('git diff --name-only --diff-filter=U')
+    let l:messaged = []
 
-    for conflict in conflicted
-        let tmp = substitute(conflict, '\_s\+', '', 'g')
+    for l:conflict in l:conflicted
+        let tmp = substitute(l:conflict, '\_s\+', '', 'g')
         if len(tmp) > 0
-            call add(massaged, tmp)
+            call add(l:messaged, tmp)
         endif
     endfor
 
-    call s:ProcessConflictFiles(massaged)
+    call s:ProcessConflictFiles(l:messaged)
 endfunction
 
-" Experimental function to load vim with all conflicted files
+" Experimental function to load vim with all l:conflicted files
 function! s:ProcessConflictFiles(files)
     " These will be conflict files to edit
-    let conflicts = []
+    let l:conflicts = []
 
     " Read git attributes file into a string
     if filereadable(expand('.gitattributes'))
-        let gitignore = join(readfile('.gitattributes'), '')
+        let l:gitignore = join(readfile('.gitattributes'), '')
     else
-        let gitignore = ''
+        let l:gitignore = ''
     endif
 
-    let conflictFiles = len(a:files) ? a:files : argv()
+    let l:conflict_files = len(a:files) ? a:files : argv()
 
     " Loop over each file in the arglist (passed in to vim from bash)
-    for conflict in conflictFiles
+    for l:conflict in l:conflict_files
 
         " If this file is not ignored in gitattributes (this could be improved)
-        if gitignore !~ conflict
+        if l:gitignore !~ l:conflict
 
             " Grep each file for the starting error marker
-            let markers = systemlist("grep -n '<<<<<<<' ".conflict)
+            let markers = systemlist("grep -n '<<<<<<<' ".l:conflict)
 
             for marker in markers
-                let spl = split(marker, ':')
+                let l:spl = split(marker, ':')
 
                 " If this line had a colon in it (otherwise it's an empty line
                 " from command output)
-                if len(spl) == 2
+                if len(l:spl) == 2
 
                     " Get the line number by removing the white space around it,
                     " because vim is a piece of shit
-                    let line = substitute(spl[0], '\_s\+', '', 'g')
+                    let l:line = substitute(l:spl[0], '\_s\+', '', 'g')
 
                     " Add this file to the list with the data format for the quickfix
                     " window
-                    call add(conflicts, {'filename': conflict, 'lnum': line, 'text': spl[1]})
+                    call add(l:conflicts, {'filename': 
+                                \ l:conflict, 'lnum': l:line, 'text': l:spl[1]})
                 endif
             endfor
         endif
-
     endfor
 
     " Set the quickfix files and open the list
-    call setqflist(conflicts)
+    call setqflist(l:conflicts)
     execute 'copen'
     execute 'cfirst'
 endfunction
