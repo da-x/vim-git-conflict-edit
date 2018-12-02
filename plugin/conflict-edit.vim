@@ -1,6 +1,5 @@
 function! EditConflictFiles()
-    let filter = system('git diff --name-only --diff-filter=U')
-    let conflicted = split(filter, '\r')
+    let conflicted = systemlist('git diff --name-only --diff-filter=U')
     let massaged = []
 
     for conflict in conflicted
@@ -34,10 +33,7 @@ function! s:ProcessConflictFiles(files)
         if gitignore !~ conflict
 
             " Grep each file for the starting error marker
-            let cmd = system("grep -n '<<<<<<<' ".conflict)
-
-            " Remove the first line (grep command) and split on linebreak
-            let markers = split(cmd, '\r')
+            let markers = systemlist("grep -n '<<<<<<<' ".conflict)
 
             for marker in markers
                 let spl = split(marker, ':')
