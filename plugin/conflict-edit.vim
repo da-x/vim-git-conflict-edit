@@ -10,11 +10,11 @@ function! EditConflictFiles()
         endif
     endfor
 
-    call ProcessConflictFiles(massaged)
+    call s:ProcessConflictFiles(massaged)
 endfunction
 
 " Experimental function to load vim with all conflicted files
-function! ProcessConflictFiles(files)
+function! s:ProcessConflictFiles(files)
     " These will be conflict files to edit
     let conflicts = []
 
