@@ -19,7 +19,11 @@ function! ProcessConflictFiles(files)
     let conflicts = []
 
     " Read git attributes file into a string
-    let gitignore = join(readfile('.gitattributes'), '')
+    if filereadable(expand('.gitattributes'))
+        let gitignore = join(readfile('.gitattributes'), '')
+    else
+        let gitignore = ''
+    endif
 
     let conflictFiles = len(a:files) ? a:files : argv()
 
