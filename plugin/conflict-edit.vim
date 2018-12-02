@@ -1,27 +1,27 @@
 function! EditConflictFiles()
     let filter = system('git diff --name-only --diff-filter=U')
-    let conflicted = split( filter, '\r')
+    let conflicted = split(filter, '\r')
     let massaged = []
 
     for conflict in conflicted
         let tmp = substitute(conflict, '\_s\+', '', 'g')
-        if len( tmp ) > 0
-            call add( massaged, tmp )
+        if len(tmp) > 0
+            call add(massaged, tmp)
         endif
     endfor
 
-    call ProcessConflictFiles( massaged )
+    call ProcessConflictFiles(massaged)
 endfunction
 
 " Experimental function to load vim with all conflicted files
-function! ProcessConflictFiles( files )
+function! ProcessConflictFiles(files)
     " These will be conflict files to edit
     let conflicts = []
 
     " Read git attributes file into a string
     let gitignore = join(readfile('.gitattributes'), '')
 
-    let conflictFiles = len( a:files ) ? a:files : argv()
+    let conflictFiles = len(a:files) ? a:files : argv()
 
     " Loop over each file in the arglist (passed in to vim from bash)
     for conflict in conflictFiles
@@ -33,15 +33,15 @@ function! ProcessConflictFiles( files )
             let cmd = system("grep -n '<<<<<<<' ".conflict)
 
             " Remove the first line (grep command) and split on linebreak
-            let markers = split( cmd, '\r' )
+            let markers = split(cmd, '\r')
 
             for marker in markers
-                let spl = split( marker, ':' )
+                let spl = split(marker, ':')
                 echo spl
 
                 " If this line had a colon in it (otherwise it's an empty line
                 " from command output)
-                if len( spl ) == 2
+                if len(spl) == 2
 
                     " Get the line number by removing the white space around it,
                     " because vim is a piece of shit
@@ -49,7 +49,7 @@ function! ProcessConflictFiles( files )
 
                     " Add this file to the list with the data format for the quickfix
                     " window
-                    call add( conflicts, {'filename': conflict, 'lnum': line, 'text': spl[1]} )
+                    call add(conflicts, {'filename': conflict, 'lnum': line, 'text': spl[1]})
                 endif
             endfor
         endif
@@ -57,7 +57,7 @@ function! ProcessConflictFiles( files )
     endfor
 
     " Set the quickfix files and open the list
-    call setqflist( conflicts )
+    call setqflist(conflicts)
     execute 'copen'
     execute 'cfirst'
 
